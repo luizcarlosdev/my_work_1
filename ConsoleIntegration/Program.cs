@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ConsoleIntegration.Model;
+using Microsoft.Xrm.Sdk;
 
 namespace ConsoleIntegration
 {
@@ -10,6 +8,16 @@ namespace ConsoleIntegration
     {
         static void Main(string[] args)
         {
+            IOrganizationService service = ConnectionFactory.GetCrmService();
+
+            Opportunity opportunity = new Opportunity(service);
+            
+            Console.WriteLine("Qual oportunidade você deseja aplicar o desconto?");
+            string opportunityId = Console.ReadLine();
+
+            Console.WriteLine(CalcularDesconto.CalcularDescontoPorIdOportunidade(opportunityId));
+
+            Console.ReadKey();
         }
     }
 }
