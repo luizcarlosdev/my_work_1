@@ -24,17 +24,17 @@ namespace ConsoleIntegration
         private static void RetrieveDiscountByOpportunity(Opportunity opportunity, string opportunityId)
         {
             EntityCollection opportunitiesCRM = opportunity.RetrieveClientByOpportunity(new Guid(opportunityId));
-            string accountLevel = "";
-            string secondLevel = "";
-            string discountLevel = "";
+            string accountLevel = string.Empty;
+            string secondLevel = string.Empty;
+            string discountLevel = string.Empty;
 
             foreach (Entity opportunityCRM in opportunitiesCRM.Entities)
             {
                 string name = opportunityCRM.Contains("name") ? opportunityCRM["name"].ToString() : "Oportunidade não possui um tópico cadastrado...";
-
+                Money totalAmount = (Money)opportunityCRM["totallineitemamount"]; //NEEDS ERROR TREATMENT
+                
                 string accountId = opportunityCRM.Contains("conta.accountid") ? ((AliasedValue)opportunityCRM["conta.accountid"]).Value.ToString() : "Oportunidade não possui um ID de conta...";
                 string accountName = opportunityCRM.Contains("conta.name") ? ((AliasedValue)opportunityCRM["conta.name"]).Value.ToString() : "Oportunidade não possui uma conta relacionada...";
-                Console.WriteLine($"\nAccountID = {accountId}\n");
 
                 EntityCollection clientLevelsCRM = opportunity.RetrieveClientLevelByAccount(new Guid(accountId));
 
@@ -45,11 +45,10 @@ namespace ConsoleIntegration
                     discountLevel = clientLevelCRM.Contains("niveldocliente.lcd_desconto") ? ((AliasedValue)clientLevelCRM["niveldocliente.lcd_desconto"]).Value.ToString() : "Cliente não possui um desconto definido...";
                 }
 
-                Console.WriteLine($"Oportunidade: {name}");
-                Console.WriteLine($"Cliente: {accountName}");
-                Console.WriteLine($"Nome do Nível do Cliente (accountLevel): {accountLevel}");
-                Console.WriteLine($"Nível do Cliente (secondLevel): {secondLevel}");
-                Console.WriteLine($"Desconto do Cliente (discountLevel): {discountLevel}");
+                Console.WriteLine($"Desconto do Cliente: " + String.Format("{0:0.00}", double.Parse(discountLevel)) + "%");
+                Console.WriteLine($"Desconto do Cliente em decimal: " + String.Format("{0:0.00}", (double.Parse(discountLevel) / 100)) + "%");
+                Console.WriteLine($"Valor total da oportunidade: {totalAmount.Value}");
+                Console.WriteLine($"Valor total com desconto: {(double)totalAmount.Value - ((double)totalAmount.Value * (double.Parse(discountLevel) / 100))}");
             }
         }
     }

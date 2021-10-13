@@ -23,7 +23,7 @@ namespace ConsoleIntegration.Model
         public EntityCollection RetrieveClientByOpportunity(Guid opportunityId)
         {
             QueryExpression queryOpportunities = new QueryExpression(this.TableName);
-            queryOpportunities.ColumnSet.AddColumns("name","parentaccountid") ;
+            queryOpportunities.ColumnSet.AddColumns("name","parentaccountid", "totallineitemamount") ;
             queryOpportunities.Criteria.AddCondition("opportunityid", ConditionOperator.Equal, opportunityId);
 
             queryOpportunities.AddLink("account", "parentaccountid", "accountid", JoinOperator.Inner);
