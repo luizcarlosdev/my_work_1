@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleIntegration.Model
 {
@@ -47,6 +44,16 @@ namespace ConsoleIntegration.Model
             queryClientLevel.LinkEntities.FirstOrDefault().EntityAlias = "niveldocliente";
 
             return this.Service.RetrieveMultiple(queryClientLevel);
+        }
+
+        public void UpdateDiscountByOpportunity(Guid opportunityId, double discountValue)
+        {
+            Entity opportunity = new Entity(this.TableName);
+            opportunity.Id = opportunityId;
+            opportunity["discountamount"] = discountValue;
+            this.Service.Update(opportunity);
+
+            Console.WriteLine($"Valor Atualizado no sistema. Agradecemos sua interação...");
         }
     }
 }
